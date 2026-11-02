@@ -1,17 +1,18 @@
 const userModel = require('../models/userModel');
 const petModel = require('../models/petModel');
-const sha256Hash = require('../helpers/hash');
+const { sha256Hash } = require('../helpers/hash');
 
-function showSignup(req, res) {
+// Sign Up Page
+function signupForm(req, res) {
   res.render('signup', { session: req.session });
 }
 
+// Handle Sign Up Submission
 function signup(req, res) {
   const { username, password, name, role, pet_name, species, breed, age } = req.body;
   let petImage;
-
   if (req.file) {
-    petImage = req.file.filename;
+    petImage = req.file.filename; // Save only the filename
   } else {
     petImage = null;
   }
@@ -39,7 +40,8 @@ function signup(req, res) {
   });
 }
 
-function showLogin(req, res) {
+// Login Page
+function loginForm(req, res) {
   res.render('login', {
     messages: req.flash('success'),
     errors: req.flash('error'),
@@ -47,10 +49,11 @@ function showLogin(req, res) {
   });
 }
 
+// Handle Login
 function login(req, res) {
   const { username, password } = req.body;
   const hashedPassword = sha256Hash(password);
-
+  
   userModel.findByCredentials(username, hashedPassword, (err, results) => {
     if (err) {
       console.error('Login query error:', err);
@@ -73,15 +76,10 @@ function login(req, res) {
   });
 }
 
+// Logout
 function logout(req, res) {
   req.session.destroy();
   res.redirect('/login');
 }
 
-module.exports = {
-  showSignup,
-  signup,
-  showLogin,
-  login,
-  logout
-};
+module.exports = { signupForm, signup, loginForm, login, logout };

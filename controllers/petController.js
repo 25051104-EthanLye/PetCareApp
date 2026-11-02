@@ -1,15 +1,17 @@
 const petModel = require('../models/petModel');
 
-function showNewPet(req, res) {
+// Add Pet Form
+function newPetForm(req, res) {
   res.render('newPet', { session: req.session });
 }
 
+// Handle Add Pet Submission
 function createPet(req, res) {
   const { pet_name, species, breed, age } = req.body;
   let petImage;
 
   if (req.file) {
-    petImage = req.file.filename;
+    petImage = req.file.filename; // use uploaded filename
   } else {
     petImage = null;
   }
@@ -25,4 +27,4 @@ function createPet(req, res) {
   });
 }
 
-module.exports = { showNewPet, createPet };
+module.exports = { newPetForm, createPet };
